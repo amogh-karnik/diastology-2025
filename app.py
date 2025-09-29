@@ -5,7 +5,7 @@ st.set_page_config(page_title="Diastolic Function Grading", layout="centered")
 st.title("LV Diastolic Function Grading & LAP Estimation")
 
 st.markdown("""
-This tool follows the **ASE/EACVI 2025 updated algorithm** for **diastolic function assessment**.  
+This tool follows the **ASE 2025 updated algorithm** for **diastolic function assessment**.  
 Enter echo measurements below to classify diastolic dysfunction and LAP.
 """)
 
@@ -29,10 +29,12 @@ TR_velocity = st.number_input("TR velocity (m/s)", min_value=0.0, step=0.1)
 
 # Supplemental parameters
 st.subheader("Supplemental Parameters (optional)")
-lavi = st.number_input("Left atrial volume index (mL/m²)", min_value=0.0, step=0.1)
-lars = st.number_input("Lateral atrial reservoir strain (% LARS)", min_value=0.0, step=0.1)
-pv_s_d = st.number_input("Pulmonary vein S/D ratio", min_value=0.0, step=0.01)
-ivrt = st.number_input("IVRT (ms)", min_value=0.0, step=1.0)
+with st.expander("Show Optional Diastolic Strain/Flow Inputs"):
+    lavi = st.number_input("Left atrial volume index (mL/m²)", min_value=0.0, step=0.1)
+    lars = st.number_input("Lateral atrial reservoir strain (% LARS)", min_value=0.0, step=0.1)
+    pv_s_d = st.number_input("Pulmonary vein S/D ratio", min_value=0.0, step=0.01)
+    ivrt = st.number_input("IVRT (ms)", min_value=0.0, step=1.0)
+
 
 
 def classify():
