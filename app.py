@@ -6,12 +6,15 @@ st.title("LV Diastolic Function Grading & LAP Estimation")
 
 st.markdown("""
 This tool follows the **ASE 2025 updated algorithm** for **diastolic function assessment**.  
-Enter echo measurements below to classify diastolic dysfunction and LAP.
+Enter echo measurements below to classify diastolic dysfunction and left atrial pressure.
+
+This algorithm is not meant for use in patients with severe MAC, MS, MR, mitral valve prostheses, pericardial constriction, or in patients with LVAD or OHT.
 """)
 
 # Inputs
 st.subheader("Patient Information")
-age = st.number_input("Age (years)", min_value=1, max_value=120, step=1)
+age = st.number_input("Age (years)", min_value=50, max_value=100, step=1)
+
 
 st.subheader("Primary Parameters")
 septal_e = st.number_input("Septal e′ velocity (cm/s)", min_value=0.0, step=0.1)
@@ -31,7 +34,7 @@ TR_velocity = st.number_input("TR velocity (m/s)", min_value=0.0, step=0.1)
 st.subheader("Secondary Parameters (optional)")
 with st.expander("Show"):
     lavi = st.number_input("Left atrial volume index (mL/m²)", min_value=0.0, step=0.1)
-    lars = st.number_input("Lateral atrial reservoir strain (% LARS)", min_value=0.0, step=0.1)
+    lars = st.number_input("Lateral atrial reservoir strain (%)", min_value=0.0, step=0.1)
     pv_s_d = st.number_input("Pulmonary vein S/D ratio", min_value=0.0, step=0.01)
     ivrt = st.number_input("IVRT (ms)", min_value=0.0, step=1.0)
 
