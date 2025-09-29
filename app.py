@@ -13,7 +13,7 @@ Enter echo measurements below to classify diastolic dysfunction and LAP.
 st.subheader("Patient Information")
 age = st.number_input("Age (years)", min_value=1, max_value=120, step=1)
 
-st.subheader("Echo Parameters")
+st.subheader("Primary Parameters")
 septal_e = st.number_input("Septal e′ velocity (cm/s)", min_value=0.0, step=0.1)
 lateral_e = st.number_input("Lateral e′ velocity (cm/s)", min_value=0.0, step=0.1)
 E = st.number_input("Mitral E velocity (cm/s)", min_value=0.0, step=0.1)
@@ -28,8 +28,8 @@ avg_Ee = E / avg_e if avg_e and avg_e > 0 else None
 TR_velocity = st.number_input("TR velocity (m/s)", min_value=0.0, step=0.1)
 
 # Supplemental parameters
-st.subheader("Supplemental Parameters (optional)")
-with st.expander("Show Optional Diastolic Strain/Flow Inputs"):
+st.subheader("Secondary Parameters (optional)")
+with st.expander("Show"):
     lavi = st.number_input("Left atrial volume index (mL/m²)", min_value=0.0, step=0.1)
     lars = st.number_input("Lateral atrial reservoir strain (% LARS)", min_value=0.0, step=0.1)
     pv_s_d = st.number_input("Pulmonary vein S/D ratio", min_value=0.0, step=0.01)
