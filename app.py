@@ -47,9 +47,11 @@ def classify():
         septal_cutoff, lateral_cutoff = 6.0, 7.0
 
     # Rule 1: reduced e′ (below age-specific cutoff OR avg <= 6.5 cm/s)
+    # Note: Check for 'is not None' is sufficient since min_value=0.0 is set.
+    # An e' of 0.0 is highly abnormal and should count as 'reduced'.
     reduced_e = (
-        (septal_e is not None and septal_e > 0 and septal_e <= septal_cutoff) or
-        (lateral_e is not None and lateral_e > 0 and lateral_e <= lateral_cutoff) or
+        (septal_e is not None and septal_e <= septal_cutoff) or
+        (lateral_e is not None and lateral_e <= lateral_cutoff) or
         (avg_e is not None and avg_e <= 6.5)
     )
 
@@ -79,31 +81,45 @@ def classify():
     if abnormal_vars == 0:
         return "Normal DF, Normal LAP"
 
+    # CASE: Only Rule 1 (reduced e') is positive (Impaired Relaxation Pattern)
     elif reduced_e and not (increased_Ee or high_TR):
         if E_A is not None and E_A <= 0.8:
             return "Grade 1 (Impaired relaxation, Normal LAP); if symptomatic, consider Diastolic Exercise Echo"
         else:
-            if supplemental_positive or abnormal_vars >= 2:
+            # E/A > 0.8: Indeterminate or Grade 2/3 (Pseudo-normal)
+            if supplemental_positive:
                 if E_A is not None and E_A < 2:
                     return "Grade 2 (Mild/Moderate ↑ LAP)"
                 elif E_A is not None:
                     return "Grade 3 (Marked ↑ LAP)"
                 else:
-                    return "Indeterminate — need supplemental methods"
+                    return "Indeterminate — need E/A ratio" # Refinement: must have E/A
             else:
                 return "Indeterminate — need supplemental methods"
 
+    # CASE: 1, 2, or 3 abnormal variables (excluding the pure Grade 1 case handled above)
+    # This primarily covers scenarios where increased_Ee or high_TR are positive.
     else:
-        if supplemental_positive or abnormal_vars == 3:
+        if abnormal_vars == 3: # 3 abnormal variables is a strong predictor of high LAP
             if E_A is not None and E_A < 2:
                 return "Grade 2 (Mild/Moderate ↑ LAP)"
             elif E_A is not None:
                 return "Grade 3 (Marked ↑ LAP)"
             else:
-                return "Indeterminate — need supplemental methods"
-        else:
-            return "Indeterminate — need supplemental methods"
+                return "Indeterminate — need E/A ratio" # Must have E/A
 
+        elif supplemental_positive:
+            # Supplemental data is available to resolve the Indeterminate 1 or 2 abnormal variables
+            if E_A is not None and E_A < 2:
+                return "Grade 2 (Mild/Moderate ↑ LAP)"
+            elif E_A is not None:
+                return "Grade 3 (Marked ↑ LAP)"
+            else:
+                return "Indeterminate — need E/A ratio"
+        
+        else:
+            # Case with 1 or 2 abnormal variables AND NO supplemental data
+            return "Indeterminate — need supplemental methods"
 
 if st.button("Classify Diastolic Function"):
     result = classify()
