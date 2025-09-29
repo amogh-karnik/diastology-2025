@@ -29,9 +29,9 @@ TR_velocity = st.number_input("TR velocity (m/s)", min_value=0.0, step=0.1)
 
 # Supplemental parameters
 st.subheader("Supplemental Parameters (optional)")
-pv_s_d = st.number_input("Pulmonary vein S/D ratio", min_value=0.0, step=0.01)
-lars = st.number_input("Lateral atrial reservoir strain (% LARS)", min_value=0.0, step=0.1)
 lavi = st.number_input("Left atrial volume index (mL/m²)", min_value=0.0, step=0.1)
+lars = st.number_input("Lateral atrial reservoir strain (% LARS)", min_value=0.0, step=0.1)
+pv_s_d = st.number_input("Pulmonary vein S/D ratio", min_value=0.0, step=0.01)
 ivrt = st.number_input("IVRT (ms)", min_value=0.0, step=1.0)
 
 
@@ -73,14 +73,14 @@ def classify():
 
     elif reduced_e and not (increased_Ee or high_TR):
         if E_A <= 0.8:
-            return "Grade 1 (Impaired relaxation, Normal LAP)"
+            return "Grade 1 (Impaired relaxation, Normal LAP); if symptomatic, consider Diastolic Exercise Echo"
         else:
             # Check supplemental + abnormal burden
             supplemental_positive = (
-                (pv_s_d and pv_s_d <= 0.67) or
-                (lars and lars <= 18) or
-                (lavi and lavi > 34) or
-                (ivrt and ivrt <= 70)
+                (pv_s_d > 0 and pv_s_d <= 0.67) or
+                (lars > 0 and lars <= 18) or
+                (lavi > 0 and lavi >= 34) or
+                (ivrt > 0 and ivrt <= 70)
             )
             if supplemental_positive or abnormal_vars >= 2:
                 if E_A < 2:
@@ -93,10 +93,10 @@ def classify():
     else:
         # If abnormal_vars ≥2 but not falling neatly in above branch
         supplemental_positive = (
-            (pv_s_d and pv_s_d <= 0.67) or
-            (lars and lars <= 18) or
-            (lavi and lavi > 34) or
-            (ivrt and ivrt <= 70)
+            (pv_s_d > 0 and pv_s_d <= 0.67) or
+            (lars > 0 and lars <= 18) or
+            (lavi > 0 and lavi >= 34) or
+            (ivrt > 0 and ivrt <= 70)
         )
         if supplemental_positive or abnormal_vars == 3:
             if E_A < 2:
