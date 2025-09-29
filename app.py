@@ -8,7 +8,7 @@ st.markdown("""
 This tool follows the **ASE 2025 updated algorithm** for **diastolic function assessment**.  
 Enter echo measurements below to classify diastolic dysfunction and left atrial pressure.
 
-This algorithm is not meant for use in patients with severe MAC, MS, MR, mitral valve prostheses, pericardial constriction, or in patients with LVAD or OHT.
+This algorithm is **not meant** for use in patients with severe MAC, MS, MR, mitral valve prostheses, pericardial constriction, or in patients with LVAD or OHT.
 """)
 
 # Inputs
