@@ -18,7 +18,7 @@ septal_e = st.number_input("Septal e′ velocity (cm/s)", min_value=0.0, step=0.
 lateral_e = st.number_input("Lateral e′ velocity (cm/s)", min_value=0.0, step=0.1)
 E = st.number_input("Mitral E velocity (cm/s)", min_value=0.0, step=0.1)
 A = st.number_input("Mitral A velocity (cm/s)", min_value=0.0, step=0.1)
-E_A = E / A
+E_A = E / A if A > 0 else None
 
 septal_Ee = E / septal_e if septal_e > 0 else None
 lateral_Ee = E / lateral_e if lateral_e > 0 else None
