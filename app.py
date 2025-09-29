@@ -25,7 +25,6 @@ avg_e = (septal_e + lateral_e) / 2 if septal_e > 0 and lateral_e > 0 else None
 avg_Ee = E / avg_e if avg_e and avg_e > 0 else None
 
 TR_velocity = st.number_input("TR velocity (m/s)", min_value=0.0, step=0.1)
-PASP = st.number_input("PASP (mmHg)", min_value=0.0, step=1.0)
 
 # Supplemental parameters
 st.subheader("Supplemental Parameters (optional)")
@@ -60,8 +59,8 @@ def classify():
         (avg_Ee and avg_Ee >= 14)
     )
 
-    # Rule 3: TR velocity or PASP
-    high_TR = TR_velocity >= 2.8 or PASP >= 35
+    # Rule 3: TR velocity
+    high_TR = TR_velocity >= 2.8
 
     if reduced_e: abnormal_vars += 1
     if increased_Ee: abnormal_vars += 1
@@ -73,25 +72,21 @@ def classify():
     elif reduced_e and not (increased_Ee or high_TR):
         if E_A <= 0.8:
             return "Grade 1 (Impaired relaxation, Normal LAP)"
-        else:
-            return "Indeterminate — consider exercise echo if symptomatic"
-    elif abnormal_vars >= 2 or increased_Ee or high_TR:
-        supplemental_positive = (
-            (pv_s_d and pv_s_d <= 0.67) or
-            (lars and lars <= 18) or
-            (lavi and lavi > 34) or
-            (ivrt and ivrt <= 70)
-        )
-        if supplemental_positive or abnormal_vars == 3:
-            if E_A < 2:
-                return "Grade 2 (Mild/Moderate ↑ LAP)"
+        elif:
+            abnormal_vars >= 2 or increased_Ee or high_TR:
+            supplemental_positive = (
+                (pv_s_d and pv_s_d <= 0.67) or
+                (lars and lars <= 18) or
+                (lavi and lavi > 34) or
+                (ivrt and ivrt <= 70)
+            )
+            if supplemental_positive or abnormal_vars == 3:
+                if E_A < 2:
+                    return "Grade 2 (Mild/Moderate ↑ LAP)"
+                else:
+                    return "Grade 3 (Marked ↑ LAP)"
             else:
-                return "Grade 3 (Marked ↑ LAP)"
-        else:
-            return "Indeterminate — need supplemental methods"
-    else:
-        return "Indeterminate"
-
+                return "Indeterminate — need supplemental methods"
 
 if st.button("Classify Diastolic Function"):
     result = classify()
