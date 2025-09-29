@@ -48,61 +48,59 @@ def classify():
 
     # Rule 1: reduced e′ (below age-specific cutoff OR avg <= 6.5 cm/s)
     reduced_e = (
-        (septal_e > 0 and septal_e <= septal_cutoff) or
-        (lateral_e > 0 and lateral_e <= lateral_cutoff) or
+        (septal_e is not None and septal_e > 0 and septal_e <= septal_cutoff) or
+        (lateral_e is not None and lateral_e > 0 and lateral_e <= lateral_cutoff) or
         (avg_e is not None and avg_e <= 6.5)
     )
 
     # Rule 2: increased E/e′
     increased_Ee = (
-        (septal_Ee and septal_Ee >= 15) or
-        (lateral_Ee and lateral_Ee >= 13) or
-        (avg_Ee and avg_Ee >= 14)
+        (septal_Ee is not None and septal_Ee >= 15) or
+        (lateral_Ee is not None and lateral_Ee >= 13) or
+        (avg_Ee is not None and avg_Ee >= 14)
     )
 
     # Rule 3: TR velocity
-    high_TR = TR_velocity >= 2.8
+    high_TR = TR_velocity is not None and TR_velocity >= 2.8
 
     if reduced_e: abnormal_vars += 1
     if increased_Ee: abnormal_vars += 1
     if high_TR: abnormal_vars += 1
+
+    # --- Supplemental parameters (optional) ---
+    supplemental_positive = (
+        (pv_s_d is not None and 0 < pv_s_d <= 0.67) or
+        (lars is not None and 0 < lars <= 18) or
+        (lavi is not None and lavi >= 34) or
+        (ivrt is not None and 0 < ivrt <= 70)
+    )
 
     # --- Decision Tree (ASE/EACVI 2025 update) ---
     if abnormal_vars == 0:
         return "Normal DF, Normal LAP"
 
     elif reduced_e and not (increased_Ee or high_TR):
-        if E_A <= 0.8:
+        if E_A is not None and E_A <= 0.8:
             return "Grade 1 (Impaired relaxation, Normal LAP); if symptomatic, consider Diastolic Exercise Echo"
         else:
-            # Check supplemental + abnormal burden
-            supplemental_positive = (
-                (pv_s_d > 0 and pv_s_d <= 0.67) or
-                (lars > 0 and lars <= 18) or
-                (lavi > 0 and lavi >= 34) or
-                (ivrt > 0 and ivrt <= 70)
-            )
             if supplemental_positive or abnormal_vars >= 2:
-                if E_A < 2:
+                if E_A is not None and E_A < 2:
                     return "Grade 2 (Mild/Moderate ↑ LAP)"
-                else:
+                elif E_A is not None:
                     return "Grade 3 (Marked ↑ LAP)"
+                else:
+                    return "Indeterminate — need supplemental methods"
             else:
                 return "Indeterminate — need supplemental methods"
 
     else:
-        # If abnormal_vars ≥2 but not falling neatly in above branch
-        supplemental_positive = (
-            (pv_s_d > 0 and pv_s_d <= 0.67) or
-            (lars > 0 and lars <= 18) or
-            (lavi > 0 and lavi >= 34) or
-            (ivrt > 0 and ivrt <= 70)
-        )
         if supplemental_positive or abnormal_vars == 3:
-            if E_A < 2:
+            if E_A is not None and E_A < 2:
                 return "Grade 2 (Mild/Moderate ↑ LAP)"
-            else:
+            elif E_A is not None:
                 return "Grade 3 (Marked ↑ LAP)"
+            else:
+                return "Indeterminate — need supplemental methods"
         else:
             return "Indeterminate — need supplemental methods"
 
