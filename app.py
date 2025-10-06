@@ -21,7 +21,7 @@ avg_e = (septal_e + lateral_e) / 2 if septal_e > 0 and lateral_e > 0 else None
 avg_Ee = E / avg_e if avg_e and avg_e > 0 else None
 
 TR_velocity = st.number_input("TR velocity (m/s)", min_value=0.0, step=0.1)
-PASP = st.number_input("PASP (mmHg)", min_value=0.0, step=1.0)
+#PASP = st.number_input("PASP (mmHg)", min_value=0.0, step=1.0)
 
 # Supplemental parameters
 st.subheader("Supplemental Parameters (optional)")
@@ -45,7 +45,7 @@ def classify():
     )
 
     # Rule 3: TR velocity or PASP
-    high_TR = TR_velocity >= 2.8 or PASP >= 35
+    high_TR = TR_velocity >= 2.8 #or PASP >= 35
 
     if reduced_e: abnormal_vars += 1
     if increased_Ee: abnormal_vars += 1
